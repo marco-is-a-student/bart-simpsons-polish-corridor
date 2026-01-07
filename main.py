@@ -21,6 +21,12 @@ def setup_client():
     client = OpenAI(api_key=API_KEY)
     return client
 
+client = setup_client()
+
+if "_temp_new_char" in st.session_state:
+    st.session_state.character = st.session_state._temp_new_char
+    del st.session_state._temp_new_char
+
 
 @st.cache_resource
 def setup_vectorstore():
@@ -95,10 +101,11 @@ st.markdown(f"""
 """
 ,unsafe_allow_html=True)
 
+clist = ["67 kid","Wario","animegirl1","animegirl2","bart simpson","Frank"]
 
 col1,col2,button1,col3,button2,col4,col5 = st.columns([5,5,1,5,1,5,5])
 with col2:
-    st.selectbox("Character",["67 kid","Wario","animegirl1","animegirl2","bart simpson","Frank"],key="character",width=200)
+    st.selectbox("Character",clist,key="character",width=200)
 with col4:
     st.selectbox("Movie",["Avengers Doomsday","thats all"],key="movie",width=200)
     toasty = st.button("click here to toast")
@@ -111,9 +118,15 @@ with col4:
             response = invoke_qa_agent(prompt=prompt)        
         st.write(response['messages'][1].content)
 
+
 with button1:
-    leftarr = st.button("",shortcut="left")
-    
+    if st.button("",shortcut="Left"):
+        curr_char = st.session_state.character
+        i = clist.index(curr_char)
+        new_index =  i-1
+        
+        st.session_state._temp_new_char = clist[new_index]
+        st.rerun() 
 
     
 with col3:
