@@ -4,7 +4,7 @@ st.set_page_config(page_title="Avenger's doomsday countdown",page_icon="🤖",la
 
 if 'character' not in st.session_state:
     st.session_state.character = "67 kid"
-if 'Avengers Doomsday' not in st.session_state:
+if 'movie' not in st.session_state:
     st.session_state.movie = "Avengers Doomsday"
 st.markdown(f"""
 <h1 style="font-family: 'Times New Roman'; text-align: center">
