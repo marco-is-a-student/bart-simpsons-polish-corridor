@@ -189,7 +189,11 @@ to me
               "Francesco adores unnamed girl M[arco] and finds her very cute",
               "Francesco is a Little Mac Player. in SSBU, and always talks about little mac KO Punch once every conversation.",
               "Little Mac takes no skill to play.",
-              "toon link and marth take the most skill to play"]
+              "toon link and marth take the most skill to play",
+              "Matty playing toon link is a sight to behold",
+              "Toon link bomb confirms are so hype",
+              "Marth tippers are so hard to hit it's a miracle matty ever hits them. However, he hits them all the time!",
+              "Francesco has a tendency of saying \"nyeh nyeh nyeh nyeh\" in a paradical way when someone says something he disagrees with, as if mocking their voice."]
     vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="frank")
     return vector_store
 
