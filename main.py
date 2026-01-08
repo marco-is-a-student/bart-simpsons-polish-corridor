@@ -18,7 +18,7 @@ print("I REDID THE ENTIRE APP")
 #universal_char = "67 kid"
 @st.cache_resource
 def setup_client():
-    API_KEY = open('.secrets/.env.local').read().split('API_KEY=')[1].split()[0]
+    API_KEY = st.secrets["API_KEY"]
     os.environ["OPENAI_API_KEY"] = API_KEY # Added this line
     client = OpenAI(api_key=API_KEY)
     return client
