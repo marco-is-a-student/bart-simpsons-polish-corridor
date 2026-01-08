@@ -338,8 +338,10 @@ with col4:
     st.selectbox("Movie",["Avengers Doomsday","thats all"],key="movie",width=200)
     toasty = st.button("click here to toast")
     if toasty:
-        st.toast("### HIIIIII")
-        st.rerun()
+        if st.session_state.movie != "Avengers Doomsday":
+            st.toast("IT NEEDS TO BE AVENGERS DOOMSDAY")
+        else:
+            st.toast("Yay!")
     prompt = st.text_area("N ter some text...")
     sendprompt = st.button("Send the prompt!")
     if sendprompt:
