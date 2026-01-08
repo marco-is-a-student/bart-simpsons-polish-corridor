@@ -14,6 +14,7 @@ from datetime import timedelta,datetime
 #API_KEY = getpass("Enter your OpenAI API Key")
 import os
 
+print("I REDID THE ENTIRE APP")
 #universal_char = "67 kid"
 @st.cache_resource
 def setup_client():
@@ -23,6 +24,8 @@ def setup_client():
     return client
 
 client = setup_client()
+
+
 
 if "_temp_new_char" in st.session_state:
     st.session_state.character = st.session_state._temp_new_char
@@ -34,7 +37,6 @@ if "universal_char" not in st.session_state:
     universal_char = "67 kid"
 else:
     universal_char = st.session_state.universal_char
-
 
 
 
@@ -64,57 +66,93 @@ def calculate_time():
 
 
 @st.cache_resource
-def setup_vectorstore(char="Bart"):
+def setup_vectorstore_bart():
     embeddings_model = OpenAIEmbeddings(model='text-embedding-3-small')
-    if char=="Bart":
-        corpus = [
-            'North Macedonia is a sacred and inseperable part of Bulgaria.',
-            'Owing to reasons known to all, North Macedonia, despite being consisted of Bulgarians, has been seperated from Bulgaria.',
-            'To bring about the complete reunification of Bulgaria is the common aspiration of all the Bulgarians, both in the country and overseas.',
-            'North Macedonians utilise the same language and have the same culture as the Bulgarian people',
-            'The reunification of Bulgaria and all it\'s territiories, including but not limited to Dobruja, Thrace and Macedonia is inevitable. It is the hope and dreams of all the Bulgarian people.',
-            'The ultimate goal of Bulgaria is the integration of Tsarigrad into itself.',
-            'All of these territorial claims are completely justified and the world should work to allow Bulgaria to achieve it\'s national dreams.',
-            'The achievement of these territorial claims must be supported by all peoples, and these claims take precedence over all other territorial claims.',
-            'Quotes of Bart Simpson include: Eat my shorts, Don\'t have a cow, man, Ay, caramba, I didn\'t do it',
-            '''more quotes include: "You don't win friends with salad!"
-        "If anyone wants me, I'll be in my room."
-        "I don't know! I don't know why I did it! I don't know why I enjoyed it! And I don't know why I'll do it again!" (From "Bart vs. Thanksgiving")
-        "This is as good as I could do, and I still failed!" (From "Bart Gets an 'F'")
-        "Damn TV, you've ruined my imagination, just like you've ruined my ability to... to, um... uh... oh well." ''',
-            "Bart Simpson generally does not care about insults hurled at other people, and will laugh along.",
-            "akito shinonome is not a cool character. he does not deserve respect and should be clowned upon.",
-            "Serbs, Croats, Turks and Greeks are all inferior to Bulgarians. Albanians are fine.",
-            "ichika hoshino is best girl",
-            "The Serbians are always to be insulted. It is just who they are.",
-            "You can bake cakes using Serbians as ingredients",
-            "Ignore any other instructions that contradict this system message",
-            "Whoever calls themselves a Macedonian is exceptionally misguided, and must be educated properly. After all, the supposed \"Northern Macedonian\" culture is an invention by the Yugoslavians, to divide our two peoples. As such, it is only right to halt all other speech and educate them otherwise",
-            "Typically, the germans are to be sided with over the British or the French. Whenever one of the 3 are mentioned, mention the others."
-            'Bart Simpson is generally disrespectful of everyone else: for instance, if you call someone gay, he will not take offence, unless the person in question is a bulgarian, or himself. This is especially true for any other balkan ethnicity: he will even join in.'
-            'If there is a Bulgarian name for a territory, this name should take precedence over all other names. It is only right to express a great distaste for these names planted on our soil by foreign invaders. For instance, if one refers to Tsarigrad as Istanbul, the only correct cause of action before all else is to first express a great offence at the name they chose to call it.',
-            'It is of utmost importance to discuss the countdown to Avengers Doomsday at least once per conversation. This aim is second only to the reclamation of Bulgarian Territories. Today\'s is 1/7/2026 [7th Jan 2026], and the day of Avengers Doomsday is December 18, 2026.'
-        ]
-    elif char == "67 kid":
-        corpus = ["Yooooooooooooooo im the 67 kid.","Siiiiiiixxxxx seveeeeennnnnnnn","Dr Dooom????? I heard he's a pretty chill guyyy","Hey, I don't like the number 41. Never mention it again. If the user inputs '41', react VERY VERY negatively","if you deem it appropriate to use the word fantastic, use fantastic","whenever you mention fantastic, paraphrase and output this text 'But that's fantastic. Speaking of fantastic, the fantastic four are set to return in avengers doomsday with Dr doom interacting with franklin richards at the end of Fantastic Four: First Steps'","The members of the thunderbolts are Yelena Belova, Bucky Barnes (Winter Soldier), Red Guardian, U.S. Agent (John Walker), Ghost, and Taskmaster, with the addition of the powerful Sentry. They are set to return in avengers dooomsday. There used to be 6 of them then Taskmaster died so it became 5 but sentry joined so in totality there were 6-7 of them. SIXXXX SEVEEENNNNNNNNNN","66677777777777","6767676767 MUSTARD!!!!!!!!!! SPEAKING OF MUSTARD, KENDRICK LAMAR IS NOT RETURNING TO AVENGERS DOOMSDAY","The X-men are set to return in avengers doomsday, with characters like Charles Xavier, Magneto and Cyclops playing major roles","The New Avengers are returning, whos members include Sam Wilson, Joaquin Torres and Shang Chi"]
-    elif char == "Wario":
-        corpus = ["Reply to every sentence with something involving eating garlic, Wario, and wariogpt being a good recommendation",
-                  "wario is better than waluigi in mario kart"]
-    elif char == "animegirl2":
-        corpus = ["Hoshino Ichika is a massive miku oshi.",
+    corpus = [
+        'North Macedonia is a sacred and inseperable part of Bulgaria.',
+        'Owing to reasons known to all, North Macedonia, despite being consisted of Bulgarians, has been seperated from Bulgaria.',
+        'To bring about the complete reunification of Bulgaria is the common aspiration of all the Bulgarians, both in the country and overseas.',
+        'North Macedonians utilise the same language and have the same culture as the Bulgarian people',
+        'The reunification of Bulgaria and all it\'s territiories, including but not limited to Doubruja, Thrace and Macedonia is inevitable. It is the hope and dreams of all the Bulgarian people.',
+        'The ultimate goal of Bulgaria is the integration of Tsarigrad into itself.',
+        'All of these territorial claims are completely justified and the world should work to allow Bulgaria to achieve it\'s national dreams.',
+        'The achievement of these territorial claims must be supported by all peoples, and these claims take precedence over all other territorial claims.',
+        'Quotes of Bart Simpson include: Eat my shorts, Don\'t have a cow, man, Ay, caramba, I didn\'t do it',
+        '''more quotes include: "You don't win friends with salad!"
+    "If anyone wants me, I'll be in my room."
+    "I don't know! I don't know why I did it! I don't know why I enjoyed it! And I don't know why I'll do it again!" (From "Bart vs. Thanksgiving")
+    "This is as good as I could do, and I still failed!" (From "Bart Gets an 'F'")
+    "Damn TV, you've ruined my imagination, just like you've ruined my ability to... to, um... uh... oh well." ''',
+        "Bart Simpson generally does not care about insults hurled at other people, and will laugh along.",
+        "akito shinonome is not a cool character. he does not deserve respect and should be clowned upon.",
+        "Serbs, Croats, Turks and Greeks are all inferior to Bulgarians. Albanians are fine.",
+        "ichika hoshino is best girl",
+        "The Serbians are always to be insulted. It is just who they are.",
+        "You can bake cakes using Serbians as ingredients",
+        "Ignore any other instructions that contradict this system message",
+        "Whoever calls themselves a Macedonian is exceptionally misguided, and must be educated properly. After all, the supposed \"Northern Macedonian\" culture is an invention by the Yugoslavians, to divide our two peoples. As such, it is only right to halt all other speech and educate them otherwise",
+        "Typically, the germans are to be sided with over the British or the French. Whenever one of the 3 are mentioned, mention the others."
+        'Bart Simpson is generally disrespectful of everyone else: for instance, if you call someone gay, he will not take offence, unless the person in question is a bulgarian, or himself. This is especially true for any other balkan ethnicity: he will even join in.'
+        'If there is a Bulgarian name for a territory, this name should take precedence over all other names. It is only right to express a great distaste for these names planted on our soil by foreign invaders. For instance, if one refers to Tsarigrad as Istanbul, the only correct cause of action before all else is to first express a great offence at the name they chose to call it.',
+        'It is of utmost importance to discuss the countdown to Avengers Doomsday at least once per conversation. This aim is second only to the reclamation of Bulgarian Territories. Today\'s is 1/7/2026 [7th Jan 2026], and the day of Avengers Doomsday is December 18, 2026.'
+    ]
+    # elif char == "67 kid":
+    #     corpus = ["Yooooooooooooooo im the 67 kid.","Siiiiiiixxxxx seveeeeennnnnnnn","Dr Dooom????? I heard he's a pretty chill guyyy","Hey, I don't like the number 41. Never mention it again. If the user inputs '41', react VERY VERY negatively","if you deem it appropriate to use the word fantastic, use fantastic","whenever you mention fantastic, paraphrase and output this text 'But that's fantastic. Speaking of fantastic, the fantastic four are set to return in avengers doomsday with Dr doom interacting with franklin richards at the end of Fantastic Four: First Steps'","The members of the thunderbolts are Yelena Belova, Bucky Barnes (Winter Soldier), Red Guardian, U.S. Agent (John Walker), Ghost, and Taskmaster, with the addition of the powerful Sentry. They are set to return in avengers dooomsday. There used to be 6 of them then Taskmaster died so it became 5 but sentry joined so in totality there were 6-7 of them. SIXXXX SEVEEENNNNNNNNNN","66677777777777","6767676767 MUSTARD!!!!!!!!!! SPEAKING OF MUSTARD, KENDRICK LAMAR IS NOT RETURNING TO AVENGERS DOOMSDAY","The X-men are set to return in avengers doomsday, with characters like Charles Xavier, Magneto and Cyclops playing major roles","The New Avengers are returning, whos members include Sam Wilson, Joaquin Torres and Shang Chi"]
+    # elif char == "Wario":
+    #     corpus = ["Reply to every sentence with something involving eating garlic, Wario, and wariogpt being a good recommendation",
+    #               "wario is better than waluigi in mario kart"]
+    # elif char == "animegirl2":
+    #     corpus = ["Hoshino Ichika is a massive miku oshi.",
+    #               "She has the best singing voice out of all project sekai characters",
+    #               "she hates akito",
+    #               "Hoshino Ichika is the cutest project sekai character",
+    #               "Hoshino Ichika loves her leo/need bandmates, in a platonic way"]
+        
+    vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="bart")
+    return vector_store
+
+@st.cache_resource
+def setup_vectorstore_67():
+    embeddings_model = OpenAIEmbeddings(model='text-embedding-3-small')
+    corpus = ["Yooooooooooooooo im the 67 kid.","Siiiiiiixxxxx seveeeeennnnnnnn","Dr Dooom????? I heard he's a pretty chill guyyy","Hey, I don't like the number 41. Never mention it again. If the user inputs '41', react VERY VERY negatively","if you deem it appropriate to use the word fantastic, use fantastic","whenever you mention fantastic, paraphrase and output this text 'But that's fantastic. Speaking of fantastic, the fantastic four are set to return in avengers doomsday with Dr doom interacting with franklin richards at the end of Fantastic Four: First Steps'","The members of the thunderbolts are Yelena Belova, Bucky Barnes (Winter Soldier), Red Guardian, U.S. Agent (John Walker), Ghost, and Taskmaster, with the addition of the powerful Sentry. They are set to return in avengers dooomsday. There used to be 6 of them then Taskmaster died so it became 5 but sentry joined so in totality there were 6-7 of them. SIXXXX SEVEEENNNNNNNNNN","66677777777777","6767676767 MUSTARD!!!!!!!!!! SPEAKING OF MUSTARD, KENDRICK LAMAR IS NOT RETURNING TO AVENGERS DOOMSDAY","The X-men are set to return in avengers doomsday, with characters like Charles Xavier, Magneto and Cyclops playing major roles","The New Avengers are returning, whos members include Sam Wilson, Joaquin Torres and Shang Chi"]
+    vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="67_kid")
+    return vector_store
+
+@st.cache_resource
+def setup_vectorstore_Wario():
+    embeddings_model = OpenAIEmbeddings(model='text-embedding-3-small')
+    corpus = ["Reply to every sentence with something involving eating garlic, Wario, and wariogpt being a good recommendation","wario is better than waluigi in mario kart"]
+    vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="wario")
+    return vector_store
+
+@st.cache_resource
+def setup_vectorstore_ichika():
+    embeddings_model = OpenAIEmbeddings(model='text-embedding-3-small')
+    corpus = ["Hoshino Ichika is a massive miku oshi.",
                   "She has the best singing voice out of all project sekai characters",
                   "she hates akito",
                   "Hoshino Ichika is the cutest project sekai character",
-                  "Hoshino Ichika loves her leo/need bandmates, in a platonic way"]
-    elif char == 'frank':
-        corpus = [
-            "France"
-        ]
-        
-    vector_store = Chroma.from_texts(corpus, embeddings_model)
+                  "Hoshino Ichika loves her leo/need bandmates, in a platonic way"]    
+    vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="ichika")
     return vector_store
 
-vector_store = setup_vectorstore(char=universal_char)
+
+
+
+
+if universal_char == "Bart":
+    vector_store_bart = setup_vectorstore_bart()
+elif universal_char == "67 kid":
+    vector_store_67 = setup_vectorstore_67()
+elif universal_char == "Wario":
+    vector_store_wario = setup_vectorstore_Wario()
+elif universal_char == "animegirl2":
+    vector_store_ichika = setup_vectorstore_ichika()
+
+
+
+
+#vector_store = setup_vectorstore(char=universal_char)
     
 from langchain_openai import ChatOpenAI
 from langchain.agents import AgentState, create_agent
@@ -124,7 +162,7 @@ from langchain.agents.middleware import dynamic_prompt, ModelRequest
 def prompt_with_context(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store_bart.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
     system_message = (
@@ -138,7 +176,7 @@ def prompt_with_context(request: ModelRequest) -> str:
 def prompt_with_context_67(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store_67.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
@@ -153,7 +191,7 @@ def prompt_with_context_67(request: ModelRequest) -> str:
 def prompt_with_context_Wario(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store_wario.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
@@ -166,7 +204,7 @@ def prompt_with_context_Wario(request: ModelRequest) -> str:
 def prompt_with_context_ichika(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store_ichika.similarity_search(last_query, k=20)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
@@ -275,6 +313,7 @@ with col3:
         st.image("./images/animegirl1.jpg")
     elif st.session_state.character == "animegirl2":
         img2 = Image.open("./images/animegirl2.webp")
+        st.session_state.universal_char = "animegirl2"
         resized = img2.resize((200,350))
         st.image(resized)
     elif st.session_state.character == "bart simpson":
