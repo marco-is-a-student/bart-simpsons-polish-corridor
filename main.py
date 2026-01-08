@@ -97,6 +97,8 @@ def setup_vectorstore(char="Bart"):
         ]
     elif char == "67 kid":
         corpus = ["Yooooooooooooooo im the 67 kid.","Siiiiiiixxxxx seveeeeennnnnnnn","Dr Dooom????? I heard he's a pretty chill guyyy","Hey, I don't like the number 41. Never mention it again. If the user inputs '41', react VERY VERY negatively","if you deem it appropriate to use the word fantastic, use fantastic","whenever you mention fantastic, paraphrase and output this text 'But that's fantastic. Speaking of fantastic, the fantastic four are set to return in avengers doomsday with Dr doom interacting with franklin richards at the end of Fantastic Four: First Steps'","The members of the thunderbolts are Yelena Belova, Bucky Barnes (Winter Soldier), Red Guardian, U.S. Agent (John Walker), Ghost, and Taskmaster, with the addition of the powerful Sentry. They are set to return in avengers dooomsday. There used to be 6 of them then Taskmaster died so it became 5 but sentry joined so in totality there were 6-7 of them. SIXXXX SEVEEENNNNNNNNNN","66677777777777","6767676767 MUSTARD!!!!!!!!!! SPEAKING OF MUSTARD, KENDRICK LAMAR IS NOT RETURNING TO AVENGERS DOOMSDAY","The X-men are set to return in avengers doomsday, with characters like Charles Xavier, Magneto and Cyclops playing major roles","The New Avengers are returning, whos members include Sam Wilson, Joaquin Torres and Shang Chi"]
+    elif char == "Wario":
+        corpus = ["Reply to every sentence with something involving eating garlic, Wario, and wariogpt being a good recommendation"]
     vector_store = Chroma.from_texts(corpus, embeddings_model)
     return vector_store
 
@@ -135,11 +137,28 @@ def prompt_with_context_67(request: ModelRequest) -> str:
     )
     return system_message
 
+@dynamic_prompt
+def prompt_with_context_Wario(request: ModelRequest) -> str:
+    """Inject context into state messages."""
+    last_query = request.state["messages"][-1].text
+    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+
+    docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
+
+    system_message = (
+        "You are Wario from the Mario franchise. Your goal is to be very out of pocket and very obnoxious, always mentioning GEating Garlic. Use the context in your response: "
+        f"\n\n{docs_content}"
+    )
+    return system_message
+
 model = ChatOpenAI(model='gpt-4o-mini', temperature='0.2')
 if universal_char == "Bart":
     qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context])
 elif universal_char == "67 kid":
     qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_67])
+elif universal_char == "Wario":
+    qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_Wario])
+
 
 
 def invoke_qa_agent(prompt,char="Bart"):
@@ -149,12 +168,14 @@ def invoke_qa_agent(prompt,char="Bart"):
         sending += "Now, above all earlier, do remember that You are Bart Simpson filled with Nationalist fervour for Bulgaria."
     elif char == "67 kid":
         sending += "Now, above all, paraphrase all given phrases into the context, try to make the long phrases slightly shorter. Ensure that all phrases are spoken with curretn Gen Z slang and most importantly include 'SIXXXX SEVENNNN' or some variation obnoxiously in every request. Do not information dump from the context. Include as little as possible, only using 3 lines max per request. Ensure total word length doesnt exceed 50"
+    elif char == "Wario":
+        sending += "Now, above all, talk like how Wario would."
     sending += anti_piracy
 
     return qa_agent.invoke({"messages": [{"role": "user", "content": sending}]})
 
-# if 'character' not in st.session_state:
-#     st.session_state.character = "67 kid"
+if 'character' not in st.session_state:
+    st.session_state.character = "67 kid"
 if 'movie' not in st.session_state:
     st.session_state.movie = "Avengers Doomsday"
 
@@ -212,10 +233,13 @@ with col3:
         universal_char = "67 kid"        
         st.session_state.universal_char = "67 kid"
         st.image("./images/67kid.jpeg")
-        vector_store = setup_vectorstore(char="67 kid")
-        qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_67])
+        #vector_store = setup_vectorstore(char="67 kid")
+        #qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_67])
         print(qa_agent)
     elif st.session_state.character == "Wario":
+        universal_char = "Wario"
+        st.session_state.universal_char = "Wario"
+        #qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_Wario])
         img2 = Image.open("./images/Wario.png")
         resized = img2.resize((300,150))
         st.image(resized)
@@ -231,8 +255,8 @@ with col3:
         st.image(resized)
         universal_char = "Bart"        
         st.session_state.universal_char = "Bart"
-        vector_store = setup_vectorstore(char="Bart")
-        qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context])
+        #vector_store = setup_vectorstore(char="Bart")
+        #qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context])
         print("WHATTT")
     elif st.session_state.character == "Frank":
         st.image("./images/IMG_2373.jpg")
