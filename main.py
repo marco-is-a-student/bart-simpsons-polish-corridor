@@ -135,7 +135,64 @@ def setup_vectorstore_ichika():
                   "Hoshino Ichika loves her leo/need bandmates, in a platonic way"]    
     vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="ichika")
     return vector_store
+@st.cache_resource
+def setup_vectorstore_frank():
+    embeddings_model = OpenAIEmbeddings(model='text-embedding-3-small')
+    corpus = ["""Here are some quotes of Francesco: 
+              
+Francesco Kai Ryuu Chan Demeglio Student
+10:04 AM (6 minutes ago)
+to me
 
+“Yeah, my Astolfo friend is spraying me with his green”
+
+“Oh fuck thats a lot of hands. Why am I nutting?”
+
+“My dad was interested in women since he was 3”
+
+“I agree, Dhanush. Faster”
+
+“Turkey is on the western border of the Germans!” (after being hinted with croissant)
+“Cant hop on, I’m gang banging a blox fruit kid on a group chat rn”
+
+“Where’s my quality youtube porn to watch on school wifi when I need it”
+
+“You know how you can just… make it move on it’s own?”
+
+“I could shave my balls and make a wig”
+
+“Don’t shave your pubic hair, it just grows back spikier”
+
+“You know in your character selection screen before you spawn in the world? Yeah I just chose all of the above for race. It took 5 minutes to render my character. I came with the autism debuff, for some reason.”
+“This porn game isn’t meant to be hard. I’m meant to be hard.”
+“I’m usually the one doing the nutting around here…”
+
+“The men are better than Miku”
+
+“Why dont we have sign language subtitles”
+
+“sex with hitler: the trilogy is being pirated rn. the vr version too”
+
+“my WiFi is shitting dishwashers”
+
+“Remember how I’m lactose intolerant? I just tolerated it. I spent 30 minutes on the toilet btw. Apparently it sounded like Hiroshima according to my friend. ”
+
+“I feel like an invasive species”
+
+“I feel like we shld discuss actual history like what could be tested for tmr. Idw get assfucked by hiters futa addiction”
+
+“Mine is just franc but stretched, and written at mach fuck, fuck*the speed of sound”
+
+“So you just add a screenshit. My screen just shat its pants. Theres a brown spot on my screen”
+
+“does anyone want desmos yuri hentai”
+              """,
+              "Francesco will always refer to himself by his full name",
+              "Francesco adores unnamed girl L and finds her very cute",
+              "Francesco is a Little Mac Player. in SSBU, and always talks about little mac KO Punch once every conversation.",
+              "Little Mac takes no skill to play."]    
+    vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="frank")
+    return vector_store
 
 
 
@@ -148,6 +205,8 @@ elif universal_char == "Wario":
     vector_store_wario = setup_vectorstore_Wario()
 elif universal_char == "animegirl2":
     vector_store_ichika = setup_vectorstore_ichika()
+elif universal_char == 'frank':
+    vector_store_frank = setup_vectorstore_frank()
 
 
 
@@ -213,6 +272,18 @@ def prompt_with_context_ichika(request: ModelRequest) -> str:
         f"\n\n{docs_content}"
     )
     return system_message
+def prompt_with_context_frank(request: ModelRequest) -> str:
+    """Inject context into state messages."""
+    last_query = request.state["messages"][-1].text
+    retrieved_docs = vector_store_frank.similarity_search(last_query, k=20)
+
+    docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
+
+    system_message = (
+        "You are Francesco Kai Ryuu Chan Kobayashi Chee Villa Lobos Rodrigez Salvador Delgado DeMeglio IV. You will talk about little mac ko punch once every conversation, using it as a trump-card to everything said against you, especially if it makes no sense. Examples include \"ok but ko punch\". It will be gramatically incorrectYou have a crush on a certain Unnamed Girl L, whose name you shall not disclose. Your goal is to express your appreciation and love for her as much as possible. Some context is available here: "
+        f"\n\n{docs_content}"
+    )
+    return system_message
 model = ChatOpenAI(model='gpt-4o-mini', temperature='0.2')
 if universal_char == "Bart":
     qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context])
@@ -222,7 +293,8 @@ elif universal_char == "Wario":
     qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_Wario])
 elif universal_char == "animegirl2":
     qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_ichika])
-
+elif universal_char == 'frank':
+    qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context_frank])
 
 
 def invoke_qa_agent(prompt,char="Bart"):
@@ -236,6 +308,8 @@ def invoke_qa_agent(prompt,char="Bart"):
         sending += "Now, above all, talk like how Wario would."
     elif char == "animegirl2":
         sending += "Now, above all, talk like how Hoshino Ichika would."
+    elif char == 'frank':
+        sending += 'Now above all, talk like how francesco would.'
     sending += anti_piracy
 
     return qa_agent.invoke({"messages": [{"role": "user", "content": sending}]})
@@ -255,7 +329,7 @@ st.markdown(f"""
 
 calculate_time()
 
-clist = ["67 kid","Wario","animegirl1","animegirl2","bart simpson","Frank"]
+clist = ["67 kid","Wario","animegirl1","animegirl2","bart simpson","frank"]
 
 col1,col2,button1,col3,button2,col4,col5 = st.columns([5,5,1,5,1,5,5])
 with col2:
@@ -326,5 +400,5 @@ with col3:
         #vector_store = setup_vectorstore(char="Bart")
         #qa_agent = create_agent(model, tools=[], middleware=[prompt_with_context])
         print("WHATTT")
-    elif st.session_state.character == "Frank":
+    elif st.session_state.character == "frank":
         st.image("./images/IMG_2373.jpg")
