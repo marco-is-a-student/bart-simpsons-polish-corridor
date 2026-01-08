@@ -14,6 +14,7 @@ from datetime import timedelta,datetime
 #API_KEY = getpass("Enter your OpenAI API Key")
 import os
 
+print("I REDID THE ENTIRE APP")
 #universal_char = "67 kid"
 @st.cache_resource
 def setup_client():
@@ -23,6 +24,8 @@ def setup_client():
     return client
 
 client = setup_client()
+
+
 
 if "_temp_new_char" in st.session_state:
     st.session_state.character = st.session_state._temp_new_char
@@ -112,7 +115,7 @@ from langchain.agents.middleware import dynamic_prompt, ModelRequest
 def prompt_with_context(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
     system_message = (
@@ -126,7 +129,7 @@ def prompt_with_context(request: ModelRequest) -> str:
 def prompt_with_context_67(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
@@ -141,7 +144,7 @@ def prompt_with_context_67(request: ModelRequest) -> str:
 def prompt_with_context_Wario(request: ModelRequest) -> str:
     """Inject context into state messages."""
     last_query = request.state["messages"][-1].text
-    retrieved_docs = vector_store.similarity_search(last_query, k=20)
+    retrieved_docs = vector_store.similarity_search(last_query, k=5)
 
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
