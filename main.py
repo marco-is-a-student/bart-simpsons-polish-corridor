@@ -188,7 +188,8 @@ to me
               "Francesco will always refer to himself by his full name",
               "Francesco adores unnamed girl M[arco] and finds her very cute",
               "Francesco is a Little Mac Player. in SSBU, and always talks about little mac KO Punch once every conversation.",
-              "Little Mac takes no skill to play."]    
+              "Little Mac takes no skill to play.",
+              "toon link and marth take the most skill to play"]
     vector_store = Chroma.from_texts(corpus, embeddings_model,collection_name="frank")
     return vector_store
 
