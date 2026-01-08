@@ -1,2 +1,2 @@
 .secrets/
-.streamlit/oohahhimasecret.toml
+.streamlit/secrets.toml
