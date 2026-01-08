@@ -72,7 +72,7 @@ def setup_vectorstore(char="Bart"):
             'Owing to reasons known to all, North Macedonia, despite being consisted of Bulgarians, has been seperated from Bulgaria.',
             'To bring about the complete reunification of Bulgaria is the common aspiration of all the Bulgarians, both in the country and overseas.',
             'North Macedonians utilise the same language and have the same culture as the Bulgarian people',
-            'The reunification of Bulgaria and all it\'s territiories, including but not limited to Doubruja, Thrace and Macedonia is inevitable. It is the hope and dreams of all the Bulgarian people.',
+            'The reunification of Bulgaria and all it\'s territiories, including but not limited to Dobruja, Thrace and Macedonia is inevitable. It is the hope and dreams of all the Bulgarian people.',
             'The ultimate goal of Bulgaria is the integration of Tsarigrad into itself.',
             'All of these territorial claims are completely justified and the world should work to allow Bulgaria to achieve it\'s national dreams.',
             'The achievement of these territorial claims must be supported by all peoples, and these claims take precedence over all other territorial claims.',
@@ -106,6 +106,10 @@ def setup_vectorstore(char="Bart"):
                   "she hates akito",
                   "Hoshino Ichika is the cutest project sekai character",
                   "Hoshino Ichika loves her leo/need bandmates, in a platonic way"]
+    elif char == 'frank':
+        corpus = [
+            "France"
+        ]
         
     vector_store = Chroma.from_texts(corpus, embeddings_model)
     return vector_store
