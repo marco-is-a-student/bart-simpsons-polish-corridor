@@ -1,4 +1,5 @@
 import streamlit as st
+import asyncio
 from PIL import Image
 st.set_page_config(page_title="Avenger's doomsday countdown",page_icon="🤖",layout="wide")
 
@@ -40,28 +41,30 @@ else:
 
 
 
-def calculate_time():
-    remaining = datetime(2026,12,18)-datetime.now()
-    remaining = remaining.days * 86400 + remaining.seconds
-    weeks = remaining // (86400*7)
-    remaining -= weeks * 86400 * 7
-    days = remaining  // 86400
-    remaining -= days * 86400
-    hours = remaining // 3600
-    remaining -= hours * 3600
-    mins = remaining // 60
-    remaining -= mins * 60
-    seconds = remaining
+async def calculate_time(place):
+    while True:
+        remaining = datetime(2026,12,18)-datetime.now()
+        remaining = remaining.days * 86400 + remaining.seconds
+        weeks = remaining // (86400*7)
+        remaining -= weeks * 86400 * 7
+        days = remaining  // 86400
+        remaining -= days * 86400
+        hours = remaining // 3600
+        remaining -= hours * 3600
+        mins = remaining // 60
+        remaining -= mins * 60
+        seconds = remaining
 
-    st.markdown(f"""
-    <h1 style="font-family: 'Times New Roman'; text-align: center">
-    {weeks} W : {days} D : {hours} H : {mins} M : {seconds} S
-    </h1>
-    <h1 style="font-family: 'Times New Roman'; text-align: center">
+        place.markdown(f"""
+        <h1 style="font-family: 'Times New Roman'; text-align: center">
+        {weeks} W : {days} D : {hours} H : {mins} M : {seconds} S
+        </h1>
+        <h1 style="font-family: 'Times New Roman'; text-align: center">
 
-    </h1>
-    """
-    ,unsafe_allow_html=True)
+        </h1>
+        """
+        ,unsafe_allow_html=True)
+        await asyncio.sleep(1)
 
 
 
@@ -333,7 +336,8 @@ st.markdown(f"""
 """
 ,unsafe_allow_html=True)
 
-calculate_time()
+place = st.empty()
+
 
 clist = ["67 kid","Wario","animegirl1","animegirl2","bart simpson","frank"]
 
@@ -413,3 +417,4 @@ with col3:
         universal_char = "frank"
         st.session_state.universal_char = "frank"
   
+asyncio.run(calculate_time(place))
